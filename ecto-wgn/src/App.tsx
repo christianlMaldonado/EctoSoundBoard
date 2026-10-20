@@ -5,20 +5,12 @@ import { HazardBar } from './components/HazardBar';
 import { VuMeter } from './components/VuMeter';
 import { SoundButton } from './components/SoundButton';
 import { AlarmButton } from './components/AlarmButton';
-import { DEFAULT_SLOTS, useSoundboard } from './hooks/useSoundboard';
+import { DEFAULT_SLOTS, PARTY_SLOT, useSoundboard } from './hooks/useSoundboard';
 
 export default function App() {
   const { 
-    analyser, 
-    playSlot, 
-    stopCurrentSound, 
-    replaceSlot, 
-    resetSlot, 
-    customSlots, 
-    hydrated, 
-    playingId,
-    startPartyMode,
-    stopPartyMode
+    analyser, playSlot, stopCurrentSound, replaceSlot, resetSlot, 
+    customSlots, hydrated, playingId, startPartyMode, stopPartyMode, loadingProgress 
   } = useSoundboard();
   
   const [alarmActive, setAlarmActive] = useState(false);
@@ -61,6 +53,7 @@ export default function App() {
               slot={slot}
               isCustom={customSlots.has(slot.id)}
               isPlaying={playingId === slot.id}
+              loadingProgress={loadingProgress[slot.id]}
               onPlay={() => playSlot(slot)}
               onReplace={(file) => replaceSlot(slot, file).catch(err => alert('Could not load audio: ' + err.message))}
               onReset={() => resetSlot(slot)}
@@ -69,7 +62,11 @@ export default function App() {
         </div>
 
         <div className="z-30 mb-2">
-          <AlarmButton active={alarmActive} onToggle={toggleAlarm} />
+          <AlarmButton 
+            active={alarmActive} 
+            onToggle={toggleAlarm} 
+            loadingProgress={loadingProgress[PARTY_SLOT.id]}
+          />
         </div>
 
         <p className="text-center text-[10px] text-gray-500 pb-2">

@@ -14,12 +14,13 @@ interface Props {
   slot: SoundSlot;
   isCustom: boolean;
   isPlaying: boolean;
+  loadingProgress?: number;
   onPlay: () => void;
   onReplace: (file: File) => void;
   onReset: () => void;
 }
 
-export function SoundButton({ slot, isCustom, isPlaying, onPlay, onReplace, onReset }: Props) {
+export function SoundButton({ slot, isCustom, isPlaying, loadingProgress, onPlay, onReplace, onReset }: Props) {
   const fileInput = useRef<HTMLInputElement>(null);
   const c = COLORS[slot.color];
 
@@ -27,8 +28,18 @@ export function SoundButton({ slot, isCustom, isPlaying, onPlay, onReplace, onRe
     <div
       className={`group relative flex flex-col items-center justify-center p-4 bg-gradient-to-b from-gray-900 to-black border-2 ${
         isPlaying ? 'border-white neon-glow' : `${c.border} ${c.glow}`
-      } rounded-2xl transition-all duration-150`}
+      } rounded-2xl transition-all duration-150 overflow-hidden`}
     >
+      {/* Loading Progress Bar */}
+      {loadingProgress !== undefined && loadingProgress < 100 && (
+        <div className="absolute bottom-0 left-0 w-full h-1 bg-gray-900 z-20">
+          <div 
+            className="h-full bg-ecto shadow-[0_0_8px_#00FF66] transition-all duration-200" 
+            style={{ width: `${loadingProgress}%` }} 
+          />
+        </div>
+      )}
+
       {isCustom && (
         <div className="absolute top-1.5 left-1.5 text-[8px] bg-ecto/20 text-ecto px-1.5 py-0.5 rounded border border-ecto/40 font-bold z-10">
           CUSTOM
